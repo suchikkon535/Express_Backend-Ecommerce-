@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/admin/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Admin Panel</h1>
+
+      <section id="login">
+        <h2>Login</h2>
+        <input id="email" placeholder="email" />
+        <input id="password" type="password" placeholder="password" />
+        <button id="loginBtn">Login</button>
+        <p id="loginMsg"></p>
+      </section>
+
+      <section id="controls" style="display:none">
+        <button id="refreshUsers">Refresh Users</button>
+        <button id="refreshItems">Refresh Items</button>
+      </section>
+
+      <section id="usersList"></section>
+      <section id="itemsList"></section>
+    </div>
+
+    <script src="/admin/main.js"></script>
+  </body>
+</html>

@@ -105,10 +105,26 @@ exports.loginUser = async (req, res) => {
     new ApiResponse(200, "Login successful", {
       token,
       user: {
-        id: user._id,
         name: user.name,
         email: user.email,
       },
     })
   );
 };
+
+exports.getUsersByRole = async (req, res) => {
+  try {
+    const role = req.params.role.toLowerCase();
+    const ROLES = ["user", "admin", "worker"];
+
+    if (!ROLES.includes(role)) {
+      throw new ApiError(400, "Invalid role");
+    }
+
+    const users = await User.find({ role }).select("name email role createdAt")
+
+    return res.json(new ApiResponse(200, "Users retrieved", users));
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}

@@ -14,7 +14,7 @@ module.exports = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({ message: "No token provided" });
+      return res.status(401).json({ message: "You are not logged in" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_TOKEN);

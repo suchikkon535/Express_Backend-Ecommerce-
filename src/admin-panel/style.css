@@ -1,0 +1,5 @@
+body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;color:#111}
+.container{max-width:900px;margin:24px auto;padding:16px;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.userCard,.itemCard{padding:8px;border:1px solid #eee;margin:8px 0;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
+input{padding:8px;margin:4px}
+button{padding:8px 12px;margin:4px}

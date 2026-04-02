@@ -19,7 +19,12 @@ const userSchema = new mongoose.Schema(
         type: String,
         required: true,
         minlength: 6,
-    }
+    },
+    role: {
+      type: String,
+      enum: ["user", "admin", "worker"],
+      default: "user",
+    },
   },
   { timestamps: true }
 );
@@ -55,7 +60,7 @@ userSchema.methods.comparePassword = function (enteredPassword) {
 
 userSchema.methods.generateJWT = function () {
   return jwt.sign(
-    { id: this._id },
+    { id: this._id, role: this.role },
     process.env.JWT_TOKEN,
     { expiresIn: "7d" }
   );
