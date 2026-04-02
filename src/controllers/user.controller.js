@@ -1,7 +1,7 @@
 const User = require("../models/user.model");
 const Item = require("../models/item.model");
 const ApiError = require("../utils/apiError");
-const ApiResponse = require("../utils/apiResponse");
+const ApiResponse = require("../utils/ApiResponse");
 
 // GET users
 exports.getUsers = async (req, res) => {

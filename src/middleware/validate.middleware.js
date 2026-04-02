@@ -1,6 +1,6 @@
 // middleware/validate.middleware.js
 
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../utils/apiError");
 
 module.exports = ({ body = [], fileFields = [] }) => {
   return (req, res, next) => {
