@@ -1,20 +1,19 @@
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
-const fs = require("fs");
+const cloudinary = require("../../config/cloudinary");
 const path = require("path");
 
-const uploadPath = path.join(__dirname, "../uploads");
-                 
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, { recursive: true });
-}
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => {
+    const name = path.parse(file.originalname).name;
+    const safeName = name.replace(/\s+/g, "_").replace(/[^\w\-]/g, "");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadPath);
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
+    return {
+      folder: "ecommerce_items",
+      public_id: `${Date.now()}-${safeName}`,
+      format: file.mimetype.split("/")[1],
+    };
   },
 });
 
