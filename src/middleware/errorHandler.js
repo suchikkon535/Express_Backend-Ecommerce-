@@ -1,9 +1,19 @@
-// middleware/errorHandler.js
+const ApiError = require("../utils/apiError");
 
 module.exports = (err, req, res, next) => {
-  res.status(err.statusCode || 500).json({
+  console.error(err);
+
+  // Handle known errors
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  // Handle unknown errors safely
+  return res.status(500).json({
     success: false,
-    message: err.message || "Internal Server Error",
-    errors: err.errors || [],
+    message: "Internal Server Error",
   });
 };

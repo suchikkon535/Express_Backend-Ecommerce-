@@ -16,9 +16,19 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
     },
     password: {
+      type: String,
+      required: true,
+      minlength: 6,
+    },
+    avatar: {
+      url: {
         type: String,
-        required: true,
-        minlength: 6,
+        required: false,
+      },
+      public_id: {
+        type: String,
+        required: false,
+      },
     },
     role: {
       type: String,

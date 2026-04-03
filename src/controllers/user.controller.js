@@ -2,83 +2,83 @@ const User = require("../models/user.model");
 const Item = require("../models/item.model");
 const ApiError = require("../utils/apiError");
 const ApiResponse = require("../utils/ApiResponse");
+const asyncHandler = require("../utils/asyncHandler");
+const cloudinary = require("../../config/cloudinary");
 
 // GET users
-exports.getUsers = async (req, res) => {
-  try {
-    const user = await User.find().select("name email")
-    res.json(new ApiResponse(200, "Users retrieved", user));
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+exports.getUsers = asyncHandler(async (req, res) => {
+
+  const user = await User.find().select("name email")
+  res.json(new ApiResponse(200, "Users retrieved", user));
+});
 
 // REGISTER
-exports.createUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
+exports.createUser = asyncHandler(async (req, res) => {
 
-    const userExists = await User.findOne({ email });
+  const { name, email, password } = req.body;
 
-    if (userExists) {
-      throw new ApiError(400, "Email already in use");
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    if (req.file?.filename && cloudinary?.uploader?.destroy) {
+      await cloudinary.uploader.destroy(req.file.filename);
+      console.log("file deleted");
     }
 
-    const user = await User.create({
-      name,
-      email,
-      password,
-    });
-
-    res.status(201).json(new ApiResponse(201, "User created", {
-      name: user.name,
-      email: user.email,
-    }));
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    throw new ApiError(400, "Email already in use");
   }
-};
+
+  const user = await User.create({
+    name,
+    email,
+    password,
+    avatar: {
+      url: req.file.path,
+      public_id: req.file.filename,
+    }
+  });
+
+  res.status(201).json(new ApiResponse(201, "User created", {
+    name: user.name,
+    email: user.email,
+    avatar: user.avatar.url,
+  }));
+
+});
 
 // UPDATE user
-exports.updateUser = async (req, res) => {
-  try {
-    const id = (req.user._id)
-    const { name, email, password } = req.body;
+exports.updateUser = asyncHandler(async (req, res) => {
+  const id = (req.user._id)
+  const { name, email, password } = req.body;
 
-    if (!password || !name || !email) {
-      throw new ApiError(400, 'Name, email and password are required');
-    }
-
-    await User.findByIdAndUpdate(id, { name, email, password }, {
-      new: true,
-    });
-
-    res.json(new ApiResponse(200, "User updated"));
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (!password || !name || !email) {
+    throw new ApiError(400, 'Name, email and password are required');
   }
-};
+
+  await User.findByIdAndUpdate(id, { name, email, password }, {
+    new: true,
+  });
+
+  res.json(new ApiResponse(200, "User updated"));
+});
 
 // DELETE user
-exports.deleteUser = async (req, res) => {
-  try {
-    const id = (req.user._id);
+exports.deleteUser = asyncHandler(async (req, res) => {
 
-    if (!id) {
-      throw new ApiError(400, 'User id not provided');
-    }
+  const id = (req.user._id);
 
-    await Item.deleteMany({ user: id });
-    await User.findByIdAndDelete(id);
-
-    return res.json(new ApiResponse(200, "User deleted"));
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (!id) {
+    throw new ApiError(400, 'User id not provided');
   }
-};
+
+  await Item.deleteMany({ user: id });
+  await User.findByIdAndDelete(id);
+
+  return res.json(new ApiResponse(200, "User deleted"));
+});
 
 // LOGIN
-exports.loginUser = async (req, res) => {
+exports.loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -110,7 +110,7 @@ exports.loginUser = async (req, res) => {
       },
     })
   );
-};
+});
 
 exports.getUsersByRole = async (req, res) => {
   try {
