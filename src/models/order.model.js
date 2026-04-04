@@ -24,7 +24,6 @@ const orderSchema = new mongoose.Schema(
     totalItems: Number,
     totalPrice: Number,
 
-    // ✅ Snapshot (NOT reference)
     shippingAddress: {
       fullName: String,
       phone: String,

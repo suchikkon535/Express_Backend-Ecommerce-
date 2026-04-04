@@ -49,7 +49,7 @@ exports.createOrder = asyncHandler(async (req, res) => {
         postalCode: address.postalCode,
         country: address.country,
       },
-    });
+    })
 
     cart.items = [];
     cart.totalItems = 0;
